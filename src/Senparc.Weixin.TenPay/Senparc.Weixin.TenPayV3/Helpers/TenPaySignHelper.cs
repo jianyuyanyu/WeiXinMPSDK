@@ -292,7 +292,7 @@ namespace Senparc.Weixin.TenPayV3.Helpers
         /// <param name="prepayId">预支付交易会话标识。</param>
         /// <param name="tenPayV3Info">微信支付 V3 配置信息。</param>
         /// <returns></returns>
-        [Obsolete("v2.3.4 起该方法已过时，请使用 GetJsApiUiPackage(string prepayId, TenPayV3Info tenPayV3Info, JsApiAppType? appType) 方法。")]
+        [Obsolete("v2.4.0 起该方法已过时，请使用 GetJsApiUiPackage(string prepayId, TenPayV3Info tenPayV3Info, JsApiAppType? appType) 方法。")]
         public static JsApiUiPackage GetJsApiUiPackage(string prepayId, TenPayV3Info tenPayV3Info)
             => GetJsApiUiPackage(prepayId, tenPayV3Info, JsApiAppType.WxOpen);
 
