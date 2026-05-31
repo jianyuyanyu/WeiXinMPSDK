@@ -28,10 +28,14 @@ Detail: https://github.com/JeffreySu/WeiXinMPSDK/blob/master/license.md
     创建标识：Yaofeng - 20231130
 ----------------------------------------------------------------*/
 
+using Newtonsoft.Json;
 using Senparc.CO2NET.Extensions;
 using Senparc.NeuChar;
 using Senparc.Weixin.CommonAPIs;
 using Senparc.Weixin.Entities;
+using System.Security.Cryptography;
+using System.Text;
+using System;
 using System.Threading.Tasks;
 
 namespace Senparc.Weixin.WxOpen.AdvancedAPIs.XPay
@@ -48,15 +52,16 @@ namespace Senparc.Weixin.WxOpen.AdvancedAPIs.XPay
         /// 查询用户代币余额
         /// </summary>
         /// <param name="accessToken"></param>
-        /// <param name="pay_sig"></param>
+        /// <param name="pay_sig">支付签名</param>
+        /// <param name="signature">用户态签名</param>
         /// <param name="openid">用户的openid</param>
         /// <param name="env">0-正式环境 1-沙箱环境</param>
         /// <param name="user_ip">用户ip，例如:1.1.1.1</param>
         /// <param name="timeOut"></param>
         /// <returns></returns>
-        public static QueryUserBalanceJsonResult QueryUserBalance(string accessToken, string pay_sig, QueryUserBalanceRequestData data, int timeOut = Config.TIME_OUT)
+        public static QueryUserBalanceJsonResult QueryUserBalance(string accessToken, string pay_sig, string signature, QueryUserBalanceRequestData data, int timeOut = Config.TIME_OUT)
         {
-            var url = string.Format(Config.ApiMpHost + "/xpay/query_user_balance?access_token={0}&pay_sig={1}", accessToken.AsUrlData(), pay_sig.AsUrlData());
+            var url = string.Format(Config.ApiMpHost + "/xpay/query_user_balance?access_token={0}&pay_sig={1}&signature={2}", accessToken.AsUrlData(), pay_sig.AsUrlData(), signature.AsUrlData());
             return CommonJsonSend.Send<QueryUserBalanceJsonResult>(null, url, data, CommonJsonSendType.POST, timeOut);
         }
 
@@ -64,8 +69,8 @@ namespace Senparc.Weixin.WxOpen.AdvancedAPIs.XPay
         /// 扣减代币（一般用于代币支付）
         /// </summary>
         /// <param name="accessToken"></param>
-        /// <param name="pay_sig"></param>
-        /// <param name="signature">签名</param>
+        /// <param name="pay_sig">支付签名</param>
+        /// <param name="signature">用户态签名</param>
         /// <param name="data">请求参数</param>
         /// <param name="timeOut"></param>
         /// <returns></returns>
@@ -93,13 +98,14 @@ namespace Senparc.Weixin.WxOpen.AdvancedAPIs.XPay
         /// 代币支付退款(currency_pay接口的逆操作)
         /// </summary>
         /// <param name="accessToken"></param>
-        /// <param name="pay_sig"></param>
+        /// <param name="pay_sig">支付签名</param>
+        /// <param name="signature">用户态签名</param>
         /// <param name="data">请求参数</param>
         /// <param name="timeOut"></param>
         /// <returns></returns>
-        public static CancelCurrencyPayJsonResult CancelCurrencyPay(string accessToken, string pay_sig, CancelCurrencyPayRequestData data, int timeOut = Config.TIME_OUT)
+        public static CancelCurrencyPayJsonResult CancelCurrencyPay(string accessToken, string pay_sig, string signature, CancelCurrencyPayRequestData data, int timeOut = Config.TIME_OUT)
         {
-            var url = string.Format(Config.ApiMpHost + "/xpay/cancel_currency_pay?access_token={0}&pay_sig={1}", accessToken.AsUrlData(), pay_sig.AsUrlData());
+            var url = string.Format(Config.ApiMpHost + "/xpay/cancel_currency_pay?access_token={0}&pay_sig={1}&signature={2}", accessToken.AsUrlData(), pay_sig.AsUrlData(), signature.AsUrlData());
             return CommonJsonSend.Send<CancelCurrencyPayJsonResult>(null, url, data, CommonJsonSendType.POST, timeOut);
         }
 
@@ -451,9 +457,9 @@ namespace Senparc.Weixin.WxOpen.AdvancedAPIs.XPay
         /// <param name="user_ip">用户ip，例如:1.1.1.1</param>
         /// <param name="timeOut"></param>
         /// <returns></returns>
-        public static async Task<QueryUserBalanceJsonResult> QueryUserBalanceAsync(string accessToken, string pay_sig, QueryUserBalanceRequestData data, int timeOut = Config.TIME_OUT)
+        public static async Task<QueryUserBalanceJsonResult> QueryUserBalanceAsync(string accessToken, string pay_sig, string signature, QueryUserBalanceRequestData data, int timeOut = Config.TIME_OUT)
         {
-            var url = string.Format(Config.ApiMpHost + "/xpay/query_user_balance?access_token={0}&pay_sig={1}", accessToken.AsUrlData(), pay_sig.AsUrlData());
+            var url = string.Format(Config.ApiMpHost + "/xpay/query_user_balance?access_token={0}&pay_sig={1}&signature={2}", accessToken.AsUrlData(), pay_sig.AsUrlData(), signature.AsUrlData());
             return await CommonJsonSend.SendAsync<QueryUserBalanceJsonResult>(null, url, data, CommonJsonSendType.POST, timeOut);
         }
 
@@ -508,9 +514,9 @@ namespace Senparc.Weixin.WxOpen.AdvancedAPIs.XPay
         /// <param name="data">请求参数</param>
         /// <param name="timeOut"></param>
         /// <returns></returns>
-        public static async Task<WxJsonResult> NotifyProvideGoodsAsync(string accessToken, string pay_sig, NotifyProvideGoodsRequestData data, int timeOut = Config.TIME_OUT)
+        public static async Task<WxJsonResult> NotifyProvideGoodsAsync(string accessToken, string pay_sig, string signature, NotifyProvideGoodsRequestData data, int timeOut = Config.TIME_OUT)
         {
-            var url = string.Format(Config.ApiMpHost + "/xpay/notify_provide_goods?access_token={0}&pay_sig={1}", accessToken.AsUrlData(), pay_sig.AsUrlData());
+            var url = string.Format(Config.ApiMpHost + "/xpay/notify_provide_goods?access_token={0}&pay_sig={1}&signature={2}", accessToken.AsUrlData(), pay_sig.AsUrlData(), signature.AsUrlData());
             return await CommonJsonSend.SendAsync<WxJsonResult>(null, url, data, CommonJsonSendType.POST, timeOut);
         }
 
@@ -834,6 +840,98 @@ namespace Senparc.Weixin.WxOpen.AdvancedAPIs.XPay
         {
             var url = string.Format(Config.ApiMpHost + "/xpay/get_upload_file_sign?access_token={0}&pay_sig={1}", accessToken.AsUrlData(), pay_sig.AsUrlData());
             return await CommonJsonSend.SendAsync<GetUploadFileSignJsonResult>(null, url, data, CommonJsonSendType.POST, timeOut);
+        }
+        #endregion
+
+        #region 扩展方法
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="uri"></param>
+        /// <param name="accessToken"></param>
+        /// <param name="appKey"></param>
+        /// <param name="sessionKey"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string GetUri<T>(string uri, string accessToken, string appKey, string sessionKey, T data)
+        {
+            var signature = GenerateSignature(sessionKey, data);
+            var paySig = GeneratePaySign(appKey, uri, data);
+            var url = $"{Config.ApiMpHost}{uri}?access_token={accessToken.AsUrlData()}&pay_sig={paySig.AsUrlData()}&signature={signature.AsUrlData()}";
+            return url;
+
+        }
+
+        /// <summary>
+        /// 生成pay_sig
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="appKey"></param>
+        /// <param name="uri">例：/xpay/query_user_balance</param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        public static string GeneratePaySign<T>(string appKey, string uri, T data)
+        {
+            if (string.IsNullOrWhiteSpace(appKey))
+            {
+                throw new System.ArgumentNullException("appKey");
+            }
+            if (string.IsNullOrWhiteSpace(uri))
+            {
+                throw new System.ArgumentNullException("uri");
+            }
+            if (data == null)
+            {
+                throw new System.ArgumentNullException("data");
+            }
+
+            var signData = JsonConvert.SerializeObject(data);
+            string rawData = $"{uri}&{signData}";
+
+            // 2. 编码为 UTF8 字节（绝大多数签名接口默认）
+            var keyBytes = Encoding.UTF8.GetBytes(appKey);
+            var dataBytes = Encoding.UTF8.GetBytes(rawData);
+
+            // 3. HMACSHA256 计算
+            using (var hmac = new HMACSHA256(keyBytes))
+            {
+                var hashBytes = hmac.ComputeHash(dataBytes);
+
+                // 4. 转小写十六进制（等价 to_hex）
+                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+            }
+        }
+
+        /// <summary>
+        /// 生成signature
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sessionKey"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException"></exception>
+        public static string GenerateSignature<T>(string sessionKey, T data)
+        {
+            if (string.IsNullOrWhiteSpace(sessionKey))
+            {
+                throw new System.ArgumentNullException("sessionKey");
+            }
+            if (data == null)
+            {
+                throw new System.ArgumentNullException("data");
+            }
+
+            var signData = JsonConvert.SerializeObject(data);
+            var keyBytes = Encoding.UTF8.GetBytes(sessionKey);
+            var dataBytes = Encoding.UTF8.GetBytes(signData);
+
+            using (var hmac = new HMACSHA256(keyBytes))
+            {
+                var hashBytes = hmac.ComputeHash(dataBytes);
+                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+            }
         }
         #endregion
     }
