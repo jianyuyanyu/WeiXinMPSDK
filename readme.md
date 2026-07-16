@@ -219,6 +219,7 @@ app.UseMessageHandlerForMp("/WeixinAsync",
 * [🍟 感谢贡献者](#-感谢贡献者)
 * [💰 捐助](#-捐助)
 * [⭐ Star 数量统计](#-star-数量统计)
+* [📊 项目运营统计](#-项目运营统计)
 * [📎 License](#-license)
 
 本库包含了 .NET Framework/.NET Standard 2.0+/.NET Core 3.1/.NET 6/.NET 7/.NET 8/.NET 10 等多个版本的源代码（核心逻辑完全一致）：
@@ -738,7 +739,21 @@ namespace Senparc.Weixin.MP.Sample.CustomerMessageHandler
 
 ## ⭐ Star 数量统计 
 
-[![starcharts stargazers over time](https://starchart.cc/JeffreySu/WeiXinMPSDK.svg)](https://starchart.cc/JeffreySu/WeiXinMPSDK)
+[![GitHub Stars](https://img.shields.io/github/stars/JeffreySu/WeiXinMPSDK?style=for-the-badge&logo=github&label=Stars)](https://github.com/JeffreySu/WeiXinMPSDK)
+
+## 📊 项目运营统计
+
+### Star 增长趋势
+
+[![Star History](https://next.ossinsight.io/widgets/official/analyze-repo-stars-history/thumbnail.png?repo_id=7560589&image_size=auto&color_scheme=light)](https://ossinsight.io/analyze/JeffreySu/WeiXinMPSDK)
+
+### Issue 打开/关闭趋势
+
+[![Issues Opened and Closed](https://next.ossinsight.io/widgets/official/analyze-repo-issue-opened-and-closed/thumbnail.png?repo_id=7560589&image_size=auto&color_scheme=light)](https://next.ossinsight.io/widgets/official/analyze-repo-issue-opened-and-closed?repo_id=7560589)
+
+### NuGet 累计下载量
+
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Senparc.Weixin?style=for-the-badge&logo=nuget&label=NuGet%20Downloads)](https://www.nuget.org/packages/Senparc.Weixin)
 
 ## 📎 License
 
